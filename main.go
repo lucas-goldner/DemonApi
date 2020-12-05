@@ -43,17 +43,17 @@ func getDemon(w http.ResponseWriter, r *http.Request) {
 }
 
 //Creates a moveset
-func createMoveset(w http.ResponseWriter, r *http.Request) {
+func createDemon(w http.ResponseWriter, r *http.Request) {
 
 }
 
 //Deletes a moveset
-func deleteMoveset(w http.ResponseWriter, r *http.Request) {
+func deleteDemon(w http.ResponseWriter, r *http.Request) {
 
 }
 
 //Updates a moveset
-func updateMoveset(w http.ResponseWriter, r *http.Request) {
+func updateDemon(w http.ResponseWriter, r *http.Request) {
 
 }
 
@@ -67,9 +67,9 @@ func main() {
 	//Route Handlers / Endpoints
 	r.HandleFunc("/api/demons", getDemons).Methods("GET")
 	r.HandleFunc("/api/demons/{id}", getDemon).Methods("GET")
-	r.HandleFunc("/api/demons", createMoveset).Methods("POST")
-	r.HandleFunc("/api/demons/{id}", deleteMoveset).Methods("DELETE")
-	r.HandleFunc("/api/demons/{id}", updateMoveset).Methods("PUT")
+	r.HandleFunc("/api/demons", createDemon).Methods("POST")
+	r.HandleFunc("/api/demons/{id}", deleteDemon).Methods("DELETE")
+	r.HandleFunc("/api/demons/{id}", updateDemon).Methods("PUT")
 
 	log.Fatal(http.ListenAndServe(":4220", r))
 }
