@@ -63,7 +63,7 @@ func createDemon(w http.ResponseWriter, r *http.Request) {
 	json.NewEncoder(w).Encode(demon)
 }
 
-//Deletes a new demon
+//Deletes a demon
 func deleteDemon(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
 	params := mux.Vars(r) //Get params
@@ -76,9 +76,22 @@ func deleteDemon(w http.ResponseWriter, r *http.Request) {
 	json.NewEncoder(w).Encode(demons)
 }
 
-//Updates a new demon
+//Updates a demon
 func updateDemon(w http.ResponseWriter, r *http.Request) {
-
+	w.Header().Set("Content-Type", "application/json")
+	params := mux.Vars(r) //Get params
+	for index, item := range demons {
+		if item.ID == params["id"] {
+			demons = append(demons[:index], demons[index+1:]...)
+			var demon Demon
+			_ = json.NewDecoder(r.Body).Decode(&demon)
+			demon.ID = strconv.Itoa(rand.Intn(1000000)) //Mock ID - not safe
+			demons = append(demons, demon)
+			json.NewEncoder(w).Encode(demon)
+			return
+		}
+	}
+	json.NewEncoder(w).Encode(demons)
 }
 
 func main() {
