@@ -3,7 +3,9 @@ package main
 import (
 	"encoding/json"
 	"log"
+	"math/rand"
 	"net/http"
+	"strconv"
 
 	"github.com/gorilla/mux"
 )
@@ -51,17 +53,22 @@ func getDemon(w http.ResponseWriter, r *http.Request) {
 	json.NewEncoder(w).Encode(&Demon{})
 }
 
-//Creates a moveset
+//Creates a new demon
 func createDemon(w http.ResponseWriter, r *http.Request) {
-
+	w.Header().Set("Content-Type", "application/json")
+	var demon Demon
+	_ = json.NewDecoder(r.Body).Decode(&demon)
+	demon.ID = strconv.Itoa(rand.Intn(1000000)) //Mock ID - not safe
+	demons = append(demons, demon)
+	json.NewEncoder(w).Encode(demon)
 }
 
-//Deletes a moveset
+//Deletes a new demon
 func deleteDemon(w http.ResponseWriter, r *http.Request) {
 
 }
 
-//Updates a moveset
+//Updates a new demon
 func updateDemon(w http.ResponseWriter, r *http.Request) {
 
 }
