@@ -10,7 +10,7 @@ import (
 
 //Demon Struct (Model)
 type Demon struct {
-	ID       int64      `json:"id"`
+	ID       string     `json:"id"`
 	Name     string     `json:"name"`
 	Strength string     `json:"strength"`
 	Weakness string     `json:"weakness"`
@@ -39,7 +39,16 @@ func getDemons(w http.ResponseWriter, r *http.Request) {
 
 //Get One Demon
 func getDemon(w http.ResponseWriter, r *http.Request) {
-
+	w.Header().Set("Content-Type", "application/json")
+	params := mux.Vars(r) //Get params
+	//Loop through demons and find with id
+	for _, item := range demons {
+		if item.ID == params["id"] {
+			json.NewEncoder(w).Encode(item)
+			return
+		}
+	}
+	json.NewEncoder(w).Encode(&Demon{})
 }
 
 //Creates a moveset
@@ -62,8 +71,8 @@ func main() {
 	r := mux.NewRouter()
 
 	//Mock Data
-	demons = append(demons, Demon{ID: 1, Level: 1, Name: "Jack Frost", Strength: "", Absorb: "Ice", Reflect: "", Weakness: "Fire", Imun: "", Attacks: []*Attacks{&Attacks{Name: "Bufu", Type: "Ice", Damage: 10, Description: "Light ice-attack"}}})
-	demons = append(demons, Demon{ID: 2, Level: 10, Name: "Black Frost", Strength: "", Absorb: "Fire", Reflect: "Ice", Weakness: "", Imun: "", Attacks: []*Attacks{&Attacks{Name: "Bufu", Type: "Ice", Damage: 10, Description: "Light ice-attack"}, &Attacks{Name: "Agi", Type: "Fire", Damage: 10, Description: "Light fire-attack"}}})
+	demons = append(demons, Demon{ID: "1", Level: 1, Name: "Jack Frost", Strength: "", Absorb: "Ice", Reflect: "", Weakness: "Fire", Imun: "", Attacks: []*Attacks{&Attacks{Name: "Bufu", Type: "Ice", Damage: 10, Description: "Light ice-attack"}}})
+	demons = append(demons, Demon{ID: "2", Level: 10, Name: "Black Frost", Strength: "", Absorb: "Fire", Reflect: "Ice", Weakness: "", Imun: "", Attacks: []*Attacks{&Attacks{Name: "Bufu", Type: "Ice", Damage: 10, Description: "Light ice-attack"}, &Attacks{Name: "Agi", Type: "Fire", Damage: 10, Description: "Light fire-attack"}}})
 	//Route Handlers / Endpoints
 	r.HandleFunc("/api/demons", getDemons).Methods("GET")
 	r.HandleFunc("/api/demons/{id}", getDemon).Methods("GET")
