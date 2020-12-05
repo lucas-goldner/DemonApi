@@ -65,7 +65,15 @@ func createDemon(w http.ResponseWriter, r *http.Request) {
 
 //Deletes a new demon
 func deleteDemon(w http.ResponseWriter, r *http.Request) {
-
+	w.Header().Set("Content-Type", "application/json")
+	params := mux.Vars(r) //Get params
+	for index, item := range demons {
+		if item.ID == params["id"] {
+			demons = append(demons[:index], demons[index+1:]...)
+			break
+		}
+	}
+	json.NewEncoder(w).Encode(demons)
 }
 
 //Updates a new demon
