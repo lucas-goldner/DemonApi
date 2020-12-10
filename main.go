@@ -1,13 +1,23 @@
 package main
 
 import (
+	"database/sql"
 	"encoding/json"
+	"fmt"
 	"log"
 	"math/rand"
 	"net/http"
 	"strconv"
 
 	"github.com/gorilla/mux"
+)
+
+const (
+	host     = "127.0.0.1"
+	port     = 5432
+	user     = "lucasgoldner"
+	password = "lol123"
+	dbname   = "demons"
 )
 
 //Demon Struct (Model)
@@ -92,6 +102,21 @@ func updateDemon(w http.ResponseWriter, r *http.Request) {
 		}
 	}
 	json.NewEncoder(w).Encode(demons)
+}
+
+func OpenConnection() *sql.DB {
+	psqlInfo := fmt.Sprintf("host=%s port=%d user=%s password=%s dbname=%s sslmode=disable", host, port, user, password, dbname)
+	db, err := sql.Open("postgres", psqlInfo)
+	if err != nil {
+		panic(err)
+	}
+
+	err = db.Ping()
+	if err != nil {
+		panic(err)
+	}
+
+	return db
 }
 
 func main() {
