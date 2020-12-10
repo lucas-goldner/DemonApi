@@ -144,6 +144,27 @@ func GETHandler(w http.ResponseWriter, r *http.Request) {
 	defer db.Close()
 }
 
+func POSTHandler(w http.ResponseWriter, r *http.Request) {
+	db := OpenConnection()
+
+	var d Demon
+	err := json.NewDecoder(r.Body).Decode(&d)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusBadRequest)
+		return
+	}
+
+	sqlStatement := `INSERT INTO demons (name, weakness, strength, absorb, imun, reflect, level) VALUES ($1, $2, $3, $4, $5, $6, $7)`
+	_, err = db.Exec(sqlStatement, d.Name, d.Weakness, d.Strength, d.Absorb, d.Imun, d.Reflect, d.Level)
+	if err != nil {
+		w.WriteHeader(http.StatusBadRequest)
+		panic(err)
+	}
+
+	w.WriteHeader(http.StatusOK)
+	defer db.Close()
+}
+
 func main() {
 	//Init Router
 	r := mux.NewRouter()
