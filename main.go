@@ -119,6 +119,31 @@ func OpenConnection() *sql.DB {
 	return db
 }
 
+func GETHandler(w http.ResponseWriter, r *http.Request) {
+	db := OpenConnection()
+
+	rows, err := db.Query("SELECT * FROM demons")
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	var demons []Demon
+
+	for rows.Next() {
+		var demon Demon
+		rows.Scan(&demon.ID, &demon.Name, &demon.Weakness, &demon.Strength, &demon.Absorb, &demon.Imun, &demon.Reflect, &demon.Level)
+		demons = append(demons, demon)
+	}
+
+	demonsBytes, _ := json.MarshalIndent(demons, "", "\t")
+
+	w.Header().Set("Content-Type", "application/json")
+	w.Write(demonsBytes)
+
+	defer rows.Close()
+	defer db.Close()
+}
+
 func main() {
 	//Init Router
 	r := mux.NewRouter()
